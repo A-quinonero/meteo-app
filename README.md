@@ -1,6 +1,6 @@
 # Meteo App (React + TypeScript + Vite)
 
-Pequeña aplicación meteorológica que consume OpenWeather y muestra la previsión por horas del día actual, con selección de idioma (EN/ES) y ciudad (Londres, Toronto, Singapur).
+Aplicación meteorológica con UX moderna que consume OpenWeather One Call 3.0 y muestra previsión por horas multi‑día, con i18n (EN/ES), selector de ciudad y manejo correcto de zonas horarias.
 
 ## Estructura
 
@@ -10,11 +10,11 @@ Pequeña aplicación meteorológica que consume OpenWeather y muestra la previsi
 - `src/helpers/`: helpers puros (fecha/husos horarios, etc.)
 - `src/config/`: constantes y configuración
 - `src/models/`: esquemas Zod y tipos de dominio
-- `src/components/`: componentes UI (pendiente de completar en la fase de UI/UX)
+- `src/components/`: componentes UI (layout, tarjetas, selectores, estados de carga/error)
 
 ## Requisitos
 
-- Node 18+ recomendado.
+- Node 20.19+ (requerido por Vite 7).
 - API Key de OpenWeather.
 
 ## Configuración
@@ -37,8 +37,39 @@ VITE_OPENWEATHER_API_KEY=tu_api_key
 ## Notas de arquitectura
 
 - Datos de OpenWeather validados con Zod y mapeados a tipos de dominio (`WeatherForecast`, `WeatherEntry`).
-- React Query para cacheo y estados de petición, parametrizado por ciudad/idioma/unidades.
-- Separación de capas: servicios (datos), hooks (React), helpers (pure), UI desacoplada.
+- React Query (v5) para cacheo y estados de petición (queryKey por ciudad/idioma/unidades), con `staleTime` y `gcTime` coherentes.
+- Separación de capas: servicios (datos), hooks (React), helpers (puros), UI desacoplada.
+- Formateo y comparaciones de fecha/hora con huso horario de la ciudad usando offset de `timezone_offset` (sin depender del huso del dispositivo).
+
+## Funcionalidad clave
+
+- Ciudades por defecto: Sabadell (ES), Tokyo (JP), Los Ángeles (US).
+- i18n EN/ES con persistencia en `localStorage`.
+- One Call 3.0: forecast horario (~48h). Además de las horas, se mapea `current` (condición actual al minuto) cuando está disponible.
+- Selector de día: “Hoy” + días siguientes disponibles (calculados a partir de las horas).
+  - “Hoy” muestra solo desde la hora local actual hacia adelante para simular “tiempo real”.
+  - Días futuros muestran el día completo.
+- Tarjeta principal (WeatherSummary): muestra siempre el dato “current” para el día actual y las mín/máx del día.
+- Grid de tarjetas horarias mostrando la hora local de la ciudad.
+- Estados de carga y error con UI cuidada.
+
+## Tests
+
+- Vitest + JSDOM.
+- Ejemplo incluido: `src/test/datetime.test.ts` validando helpers de fecha/hora con offset (formato de hora y fecha local, comparación por día local).
+
+## UX/Detalles
+
+- UI responsive mobile‑first, layouts con `styled-components` y efectos sutiles (glass, hover, focus visibles).
+- Accesibilidad: roles/aria en estados, y toggle de idiomas sin banderas (EN/ES).
+- El resumen permanece “sticky” en desktop, y el grid aprovecha el ancho con columnas fluidas.
+
+## Próximos pasos
+
+- Nueva rama para:
+  - Mejorar skeletons de carga en más vistas/transiciones.
+  - Optimización de re‑renders (memoización selectiva, `React.memo`, `useMemo`/`useCallback` en límites, y selectores de React Query).
+- Añadir más tests (hooks de filtrado por día y límites en zonas horarias).
 
 ## Próximos pasos (UI/UX)
 
@@ -49,76 +80,4 @@ VITE_OPENWEATHER_API_KEY=tu_api_key
 
 ---
 
-Gracias por revisar esta prueba técnica.# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Gracias por revisar esta prueba técnica.

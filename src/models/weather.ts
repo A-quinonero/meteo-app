@@ -12,8 +12,15 @@ const OneCallHourlyItemSchema = z.object({
   weather: z.array(OneCallWeatherSchema).min(1),
 })
 
+const OneCallCurrentSchema = z.object({
+  dt: z.number(),
+  temp: z.number(),
+  weather: z.array(OneCallWeatherSchema).min(1),
+})
+
 const OneCallApiSchema = z.object({
   timezone_offset: z.number(),
+  current: OneCallCurrentSchema.optional(),
   hourly: z.array(OneCallHourlyItemSchema),
 })
 
@@ -34,5 +41,6 @@ export type WeatherForecast = {
   city?: string
   country?: string
   timezoneOffset: number
+  current?: WeatherEntry
   entries: WeatherEntry[]
 }
