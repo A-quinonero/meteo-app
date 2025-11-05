@@ -97,19 +97,23 @@ export default function App() {
             {timelineHours.length > 0 && selectedHourEntry ? (
               <FadeTransition>
                 <ContentLayout>
-                  <HourlyTimeline 
-                    entries={timelineHours} 
-                    timezoneOffset={timezoneOffset} 
-                    lang={lang}
-                    isToday={selectedDay === 0}
-                    selectedEpoch={activeHourEpoch || undefined}
-                    onSelectHour={onSelectHour}
-                  />
-                  <HourDetail 
-                    entry={selectedHourEntry}
-                    timezoneOffset={timezoneOffset}
-                    lang={lang}
-                  />
+                  <div data-tour="hourly-timeline">
+                    <HourlyTimeline 
+                      entries={timelineHours} 
+                      timezoneOffset={timezoneOffset} 
+                      lang={lang}
+                      isToday={selectedDay === 0}
+                      selectedEpoch={activeHourEpoch || undefined}
+                      onSelectHour={onSelectHour}
+                    />
+                  </div>
+                  <div data-tour="hour-detail">
+                    <HourDetail 
+                      entry={selectedHourEntry}
+                      timezoneOffset={timezoneOffset}
+                      lang={lang}
+                    />
+                  </div>
                 </ContentLayout>
               </FadeTransition>
             ) : (
