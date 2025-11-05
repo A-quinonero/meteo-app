@@ -100,7 +100,7 @@ type Props = {
 
 export function DaySelector({ options, selectedDay, onChange }: Props) {
   return (
-    <Container role="tablist" aria-label="Day selector">
+    <Container role="tablist" aria-label="Day selector" data-tour="day-selector">
       {options.map((option) => (
         <DayButton
           key={option.value}

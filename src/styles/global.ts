@@ -13,4 +13,10 @@ export const GlobalStyle = createGlobalStyle`
   }
   h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 600; }
   button { cursor: pointer; font-family: inherit; }
+  
+  /* Tour highlight */
+  .tour-highlight {
+    position: relative !important;
+    z-index: 10000 !important;
+  }
 `

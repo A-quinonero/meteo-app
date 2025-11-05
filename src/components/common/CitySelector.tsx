@@ -93,7 +93,7 @@ type Props = {
 
 export function CitySelector({ label, value, options, onChange, helperText }: Props) {
   return (
-    <Container>
+    <Container data-tour="city-selector">
       <Label htmlFor="city-select">{label}</Label>
       <SelectWrapper>
         <Select 
