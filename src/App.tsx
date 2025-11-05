@@ -1,16 +1,20 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_CITIES, type City } from './config/constants'
 import { useWeather } from './hooks/useWeather'
 import { useDayOptions } from './hooks/useDayOptions'
-import { useFilteredEntriesByDay } from './hooks/useFilteredEntriesByDay'
-import type { WeatherEntry } from './models/weather'
+import { useTimelineHours } from './hooks/useNext12Hours'
+import { useSelectedDayString } from './hooks/useSelectedDayString'
+// import { useDefaultHourEpoch } from './hooks/useDefaultHourEpoch'
+import { useAvailableDaysCount } from './hooks/useAvailableDaysCount'
+import { useActiveHourState } from './hooks/useActiveHourState'
+import { useCityOptions } from './hooks/useCityOptions'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
-import CitySelector, { type CityOption } from './components/common/CitySelector'
+import CitySelector from './components/common/CitySelector'
 import DaySelector from './components/common/DaySelector'
-import ForecastGrid from './components/weather/ForecastGrid'
-import WeatherSummary from './components/weather/WeatherSummary'
+import HourlyTimeline from './components/weather/HourlyTimeline'
+import HourDetail from './components/weather/HourDetail'
 import LoadingState from './components/common/LoadingState'
 import ErrorState from './components/common/ErrorState'
 import FadeTransition from './components/common/FadeTransition'
@@ -25,78 +29,40 @@ export default function App() {
   
   const selectedCity = DEFAULT_CITIES.find((c) => c.id === cityId) as City
   const { data, isLoading, error } = useWeather(selectedCity, lang, 'metric')
-
-  // Calcular cuántos días locales distintos hay en las entradas (p.ej. hourly suele ser ~48h => 2 días)
+  
   const timezoneOffset = data?.timezoneOffset || 0
-  const availableDaysCount = useMemo(() => {
-    const entries = data?.entries || []
-    if (entries.length === 0) return 1
-    const set = new Set<string>()
-    for (const e of entries) {
-      const local = new Date((e.epoch + timezoneOffset) * 1000)
-      const key = `${local.getUTCFullYear()}-${local.getUTCMonth()}-${local.getUTCDate()}`
-      set.add(key)
-      if (set.size >= 5) break
-    }
-    return Math.min(5, set.size)
-  }, [data?.entries, timezoneOffset])
-
-  // Asegurar que el día seleccionado esté dentro de rango cuando cambian las opciones
+  
+  // Calcular día seleccionado en formato YYYY-MM-DD
+  const selectedDayString = useSelectedDayString(selectedDay, timezoneOffset)
+  
+  // Obtener horas para la timeline según el día seleccionado
+  const timelineHours = useTimelineHours(
+    data?.entries || [],
+    timezoneOffset,
+    selectedDayString
+  )
+  
+  // Gestionar hora activa (selección y entry memoizada)
+  const { activeHourEpoch, selectedHourEntry, onSelectHour } = useActiveHourState(
+    timelineHours,
+    timezoneOffset,
+    selectedDayString
+  )
+  
+  // Calcular días disponibles (memo)
+  const availableDaysCount = useAvailableDaysCount(data?.entries || [], timezoneOffset)
+  
+  // Asegurar que el día seleccionado esté dentro de rango
   useEffect(() => {
     if (selectedDay > availableDaysCount - 1) {
       setSelectedDay(availableDaysCount - 1)
     }
   }, [availableDaysCount, selectedDay])
-
-  // Generar opciones de días basadas en la zona horaria de la ciudad y días disponibles
+  
+  // Generar opciones de días
   const dayOptions = useDayOptions(timezoneOffset, lang, availableDaysCount)
   
-  // Filtrar entradas por día seleccionado
-  const filteredEntries = useFilteredEntriesByDay(
-    data?.entries || [],
-    selectedDay,
-    data?.timezoneOffset || 0
-  )
-
-  // Entradas del día completo (sin recorte "desde ahora") para min/max del resumen
-  const fullDayEntries = useMemo(() => {
-    const entries = data?.entries || []
-    const tz = timezoneOffset
-    if (entries.length === 0) return [] as WeatherEntry[]
-
-    const nowUtc = Math.floor(Date.now() / 1000)
-    const nowLocal = nowUtc + tz
-    const nowLocalDate = new Date(nowLocal * 1000)
-
-    const todayStartLocal = new Date(Date.UTC(
-      nowLocalDate.getUTCFullYear(),
-      nowLocalDate.getUTCMonth(),
-      nowLocalDate.getUTCDate(),
-      0, 0, 0, 0
-    ))
-    const targetDayStartLocal = new Date(todayStartLocal)
-    targetDayStartLocal.setUTCDate(targetDayStartLocal.getUTCDate() + selectedDay)
-
-    const targetYear = targetDayStartLocal.getUTCFullYear()
-    const targetMonth = targetDayStartLocal.getUTCMonth()
-    const targetDate = targetDayStartLocal.getUTCDate()
-
-    return entries.filter((e) => {
-      const entryLocal = e.epoch + tz
-      const d = new Date(entryLocal * 1000)
-      return (
-        d.getUTCFullYear() === targetYear &&
-        d.getUTCMonth() === targetMonth &&
-        d.getUTCDate() === targetDate
-      )
-    })
-  }, [data?.entries, selectedDay, timezoneOffset])
-
-  const cityOptions: CityOption[] = DEFAULT_CITIES.map((c) => ({ 
-    id: c.id, 
-    value: c.id, 
-    label: c.label[lang] 
-  }))
+  const cityOptions = useCityOptions(lang)
 
   return (
     <PageWrapper>
@@ -110,7 +76,7 @@ export default function App() {
             options={cityOptions} 
             onChange={(newCityId) => {
               setCityId(newCityId)
-              setSelectedDay(0) // Reset al cambiar ciudad
+              setSelectedDay(0)
             }}
             helperText={lang === 'en' ? 'Real-time weather forecast' : 'Previsión meteorológica en tiempo real'}
           />
@@ -128,35 +94,23 @@ export default function App() {
               />
             </DaySelectorWrapper>
 
-            {filteredEntries.length > 0 || (selectedDay === 0 && data?.current) ? (
+            {timelineHours.length > 0 && selectedHourEntry ? (
               <FadeTransition>
-                <ResponsiveLayout>
-                  <SummaryColumn data-tour="weather-summary">
-                    <WeatherSummary
-                      current={(selectedDay === 0 && data?.current) ? data.current : filteredEntries[0]}
-                      dailyMin={(filteredEntries.length > 0
-                        ? Math.min(...filteredEntries.map((e) => e.tempMin))
-                        : (fullDayEntries.length > 0
-                            ? Math.min(...fullDayEntries.map((e) => e.tempMin))
-                            : (selectedDay === 0 && data?.current ? Math.round(data.current.temp) : 0)
-                          )
-                      )}
-                      dailyMax={(filteredEntries.length > 0
-                        ? Math.max(...filteredEntries.map((e) => e.tempMax))
-                        : (fullDayEntries.length > 0
-                            ? Math.max(...fullDayEntries.map((e) => e.tempMax))
-                            : (selectedDay === 0 && data?.current ? Math.round(data.current.temp) : 0)
-                          )
-                      )}
-                      lang={lang}
-                      cityName={selectedCity.label[lang]}
-                      timezoneOffset={timezoneOffset}
-                    />
-                  </SummaryColumn>
-                  <ForecastColumn>
-                    <ForecastGrid entries={filteredEntries as WeatherEntry[]} lang={lang} timezoneOffset={timezoneOffset} />
-                  </ForecastColumn>
-                </ResponsiveLayout>
+                <ContentLayout>
+                  <HourlyTimeline 
+                    entries={timelineHours} 
+                    timezoneOffset={timezoneOffset} 
+                    lang={lang}
+                    isToday={selectedDay === 0}
+                    selectedEpoch={activeHourEpoch || undefined}
+                    onSelectHour={onSelectHour}
+                  />
+                  <HourDetail 
+                    entry={selectedHourEntry}
+                    timezoneOffset={timezoneOffset}
+                    lang={lang}
+                  />
+                </ContentLayout>
               </FadeTransition>
             ) : (
               <ErrorState 
@@ -218,29 +172,16 @@ const DaySelectorWrapper = styled.div`
   }
 `
 
-const ResponsiveLayout = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
+const ContentLayout = styled.div`
+  display: flex;
+  flex-direction: column;
   gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 
-  @media (min-width: 1024px) {
-    grid-template-columns: 400px 1fr;
+  @media (min-width: 640px) {
     gap: 32px;
-    align-items: start;
-  }
-
-  @media (min-width: 1280px) {
-    grid-template-columns: 450px 1fr;
-    gap: 40px;
   }
 `
 
-const SummaryColumn = styled.div`
-  width: 100%;
-`
-
-const ForecastColumn = styled.div`
-  width: 100%;
-  min-width: 0;
-`
  
