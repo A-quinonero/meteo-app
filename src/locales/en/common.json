@@ -1,0 +1,9 @@
+{
+  "appName": "Meteo App",
+  "language": "Language",
+  "english": "English",
+  "spanish": "Spanish",
+  "city": "City",
+  "loading": "Loading...",
+  "errorLoading": "Error loading weather"
+}
