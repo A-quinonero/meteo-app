@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { DEFAULT_CITIES } from './config/constants'
+import { DEFAULT_CITIES, type City } from './config/constants'
 import { useWeather } from './hooks/useWeather'
 import type { WeatherEntry } from './models/weather'
 import Header from './components/layout/Header'
@@ -11,25 +11,24 @@ import styled from 'styled-components'
 export default function App() {
   const { t, i18n } = useTranslation('common')
   const lang = (i18n.language?.startsWith('es') ? 'es' : 'en') as 'en' | 'es'
-  const [city, setCity] = useState<string>(DEFAULT_CITIES[0].q)
-  const { data, isLoading, error } = useWeather(city, lang, 'metric')
+  const [cityId, setCityId] = useState<string>(DEFAULT_CITIES[0].id)
+  const selectedCity = DEFAULT_CITIES.find((c) => c.id === cityId) as City
+  const { data, isLoading, error } = useWeather(selectedCity, lang, 'metric')
 
-  const cityOptions: CityOption[] = DEFAULT_CITIES.map((c) => ({ id: c.id, value: c.q, label: c.label[lang] }))
+  const cityOptions: CityOption[] = DEFAULT_CITIES.map((c) => ({ id: c.id, value: c.id, label: c.label[lang] }))
 
   return (
     <Page>
       <Header title={t('appName')} />
 
-      <CitySelector label={t('city')} value={city} options={cityOptions} onChange={setCity} />
+  <CitySelector label={t('city')} value={cityId} options={cityOptions} onChange={setCityId} />
 
       <Section>
         {isLoading && <p>{t('loading')}</p>}
         {error && <p style={{ color: 'red' }}>{t('errorLoading')}</p>}
         {data && (
           <div>
-            <h2>
-              {data.city}, {data.country}
-            </h2>
+            <h2>{selectedCity.label[lang]}</h2>
             <ForecastGrid entries={data.entries as WeatherEntry[]} lang={lang} />
           </div>
         )}
