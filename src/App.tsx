@@ -13,6 +13,7 @@ import ForecastGrid from './components/weather/ForecastGrid'
 import WeatherSummary from './components/weather/WeatherSummary'
 import LoadingState from './components/common/LoadingState'
 import ErrorState from './components/common/ErrorState'
+import FadeTransition from './components/common/FadeTransition'
 import styled from 'styled-components'
 
 export default function App() {
@@ -127,33 +128,35 @@ export default function App() {
             </DaySelectorWrapper>
 
             {filteredEntries.length > 0 || (selectedDay === 0 && data?.current) ? (
-              <ResponsiveLayout>
-                <SummaryColumn>
-                  <WeatherSummary
-                    current={(selectedDay === 0 && data?.current) ? data.current : filteredEntries[0]}
-                    dailyMin={(filteredEntries.length > 0
-                      ? Math.min(...filteredEntries.map((e) => e.tempMin))
-                      : (fullDayEntries.length > 0
-                          ? Math.min(...fullDayEntries.map((e) => e.tempMin))
-                          : (selectedDay === 0 && data?.current ? Math.round(data.current.temp) : 0)
-                        )
-                    )}
-                    dailyMax={(filteredEntries.length > 0
-                      ? Math.max(...filteredEntries.map((e) => e.tempMax))
-                      : (fullDayEntries.length > 0
-                          ? Math.max(...fullDayEntries.map((e) => e.tempMax))
-                          : (selectedDay === 0 && data?.current ? Math.round(data.current.temp) : 0)
-                        )
-                    )}
-                    lang={lang}
-                    cityName={selectedCity.label[lang]}
-                    timezoneOffset={timezoneOffset}
-                  />
-                </SummaryColumn>
-                <ForecastColumn>
-                  <ForecastGrid entries={filteredEntries as WeatherEntry[]} lang={lang} timezoneOffset={timezoneOffset} />
-                </ForecastColumn>
-              </ResponsiveLayout>
+              <FadeTransition>
+                <ResponsiveLayout>
+                  <SummaryColumn>
+                    <WeatherSummary
+                      current={(selectedDay === 0 && data?.current) ? data.current : filteredEntries[0]}
+                      dailyMin={(filteredEntries.length > 0
+                        ? Math.min(...filteredEntries.map((e) => e.tempMin))
+                        : (fullDayEntries.length > 0
+                            ? Math.min(...fullDayEntries.map((e) => e.tempMin))
+                            : (selectedDay === 0 && data?.current ? Math.round(data.current.temp) : 0)
+                          )
+                      )}
+                      dailyMax={(filteredEntries.length > 0
+                        ? Math.max(...filteredEntries.map((e) => e.tempMax))
+                        : (fullDayEntries.length > 0
+                            ? Math.max(...fullDayEntries.map((e) => e.tempMax))
+                            : (selectedDay === 0 && data?.current ? Math.round(data.current.temp) : 0)
+                          )
+                      )}
+                      lang={lang}
+                      cityName={selectedCity.label[lang]}
+                      timezoneOffset={timezoneOffset}
+                    />
+                  </SummaryColumn>
+                  <ForecastColumn>
+                    <ForecastGrid entries={filteredEntries as WeatherEntry[]} lang={lang} timezoneOffset={timezoneOffset} />
+                  </ForecastColumn>
+                </ResponsiveLayout>
+              </FadeTransition>
             ) : (
               <ErrorState 
                 message={
