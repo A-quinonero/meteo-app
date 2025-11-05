@@ -45,7 +45,7 @@ export function LanguageSwitcher() {
   const current = i18n.language.startsWith('es') ? 'es' : 'en'
 
   return (
-    <Container role="group" aria-label="Language selector">
+    <Container role="group" aria-label="Language selector" data-tour="language-switcher">
       <Button 
         isActive={current === 'en'} 
         onClick={() => changeLanguage('en')} 

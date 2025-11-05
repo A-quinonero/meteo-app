@@ -37,7 +37,9 @@ export function Header({ title }: Props) {
   return (
     <HeaderBar>
       <Title>{title}</Title>
-      <LanguageSwitcher />
+      <div data-tour="language-switcher">
+        <LanguageSwitcher />
+      </div>
     </HeaderBar>
   )
 }

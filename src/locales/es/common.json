@@ -5,5 +5,20 @@
   "spanish": "Español",
   "city": "Ciudad",
   "loading": "Cargando...",
-  "errorLoading": "Error cargando datos"
+  "errorLoading": "Error cargando datos",
+  "tour": {
+    "welcome": "¡Bienvenido a Meteo App!",
+    "step1Title": "Selecciona una Ciudad",
+    "step1Text": "Elige entre Sabadell, Tokio o Los Ángeles para ver el clima en tiempo real.",
+    "step2Title": "Cambia de Idioma",
+    "step2Text": "Alterna entre inglés y español con los botones de idioma en la cabecera.",
+    "step3Title": "Selecciona un Día",
+    "step3Text": "Consulta pronósticos por hora para hoy o hasta 4 días más. Las horas se muestran en la zona horaria de la ciudad.",
+    "step4Title": "Actualizaciones en Tiempo Real",
+    "step4Text": "La tarjeta principal muestra condiciones actuales. Las tarjetas horarias muestran temperatura, descripción y mín/máx del día.",
+    "next": "Siguiente",
+    "prev": "Anterior",
+    "finish": "¡Entendido!",
+    "skip": "Saltar tutorial"
+  }
 }

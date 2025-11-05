@@ -14,6 +14,7 @@ import WeatherSummary from './components/weather/WeatherSummary'
 import LoadingState from './components/common/LoadingState'
 import ErrorState from './components/common/ErrorState'
 import FadeTransition from './components/common/FadeTransition'
+import TourManager from './components/tour/TourManager'
 import styled from 'styled-components'
 
 export default function App() {
@@ -102,7 +103,7 @@ export default function App() {
       <Header title={t('appName')} />
 
       <MainContainer>
-        <CitySelectorWrapper>
+        <CitySelectorWrapper data-tour="city-selector">
           <CitySelector 
             label={lang === 'en' ? 'Select a city' : 'Selecciona una ciudad'} 
             value={cityId} 
@@ -119,7 +120,7 @@ export default function App() {
         {error && <ErrorState message={t('errorLoading')} />}
         {data && data.entries.length > 0 && (
           <>
-            <DaySelectorWrapper>
+            <DaySelectorWrapper data-tour="day-selector">
               <DaySelector 
                 options={dayOptions} 
                 selectedDay={selectedDay} 
@@ -130,7 +131,7 @@ export default function App() {
             {filteredEntries.length > 0 || (selectedDay === 0 && data?.current) ? (
               <FadeTransition>
                 <ResponsiveLayout>
-                  <SummaryColumn>
+                  <SummaryColumn data-tour="weather-summary">
                     <WeatherSummary
                       current={(selectedDay === 0 && data?.current) ? data.current : filteredEntries[0]}
                       dailyMin={(filteredEntries.length > 0
@@ -171,6 +172,8 @@ export default function App() {
       </MainContainer>
 
       <Footer lang={lang} />
+      
+      <TourManager enabled={!isLoading && !!data} />
     </PageWrapper>
   )
 }

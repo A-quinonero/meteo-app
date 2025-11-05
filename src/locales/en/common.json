@@ -5,5 +5,20 @@
   "spanish": "Spanish",
   "city": "City",
   "loading": "Loading...",
-  "errorLoading": "Error loading weather"
+  "errorLoading": "Error loading weather",
+  "tour": {
+    "welcome": "Welcome to Meteo App!",
+    "step1Title": "Select a City",
+    "step1Text": "Choose from Sabadell, Tokyo, or Los Angeles to see real-time weather.",
+    "step2Title": "Switch Languages",
+    "step2Text": "Toggle between English and Spanish with the language buttons in the header.",
+    "step3Title": "Select a Day",
+    "step3Text": "View hourly forecasts for today or up to 4 days ahead. Hours are shown in the city's local time.",
+    "step4Title": "Real-time Updates",
+    "step4Text": "The main card shows current conditions. Hourly cards display temperature, description, and daily min/max.",
+    "next": "Next",
+    "prev": "Previous",
+    "finish": "Got it!",
+    "skip": "Skip tour"
+  }
 }

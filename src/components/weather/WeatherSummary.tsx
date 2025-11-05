@@ -182,7 +182,7 @@ export function WeatherSummary({ current, dailyMin, dailyMax, lang, cityName, ti
   const updateTime = formatLocalDateTime(current.epoch, timezoneOffset, lang)
 
   return (
-    <Card>
+    <Card data-tour="weather-summary">
       <CityName>{cityName}</CityName>
       <UpdateTime>
         {lang === 'en' ? 'Updated at' : 'Actualizado a las'} {updateTime}
