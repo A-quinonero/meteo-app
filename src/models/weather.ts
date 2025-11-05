@@ -1,33 +1,24 @@
 import { z } from 'zod'
 
-const WeatherItemSchema = z.object({
-  dt: z.number(),
-  main: z.object({
-    temp: z.number(),
-    temp_min: z.number(),
-    temp_max: z.number(),
-  }),
-  weather: z
-    .array(
-      z.object({
-        description: z.string(),
-        icon: z.string(),
-      }),
-    )
-    .min(1),
+// One Call 3.0 hourly schema (lo mínimo necesario)
+const OneCallWeatherSchema = z.object({
+  description: z.string(),
+  icon: z.string(),
 })
 
-const ForecastApiSchema = z.object({
-  list: z.array(WeatherItemSchema),
-  city: z.object({
-    name: z.string(),
-    country: z.string(),
-    timezone: z.number(), // seconds shift from UTC
-  }),
+const OneCallHourlyItemSchema = z.object({
+  dt: z.number(), // epoch seconds UTC
+  temp: z.number(),
+  weather: z.array(OneCallWeatherSchema).min(1),
 })
 
-export type ForecastApi = z.infer<typeof ForecastApiSchema>
-export const parseForecastApi = (data: unknown): ForecastApi => ForecastApiSchema.parse(data)
+const OneCallApiSchema = z.object({
+  timezone_offset: z.number(),
+  hourly: z.array(OneCallHourlyItemSchema),
+})
+
+export type OneCallApi = z.infer<typeof OneCallApiSchema>
+export const parseOneCallApi = (data: unknown): OneCallApi => OneCallApiSchema.parse(data)
 
 export type WeatherEntry = {
   epoch: number
@@ -40,8 +31,8 @@ export type WeatherEntry = {
 }
 
 export type WeatherForecast = {
-  city: string
-  country: string
+  city?: string
+  country?: string
   timezoneOffset: number
   entries: WeatherEntry[]
 }
