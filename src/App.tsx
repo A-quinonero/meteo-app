@@ -1,25 +1,25 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { DEFAULT_CITIES } from './config/constants'
 import { useWeather } from './hooks/useWeather'
 import type { WeatherEntry } from './models/weather'
+import LanguageSwitcher from './components/LanguageSwitcher'
 
 export default function App() {
-  const [lang, setLang] = useState<'en' | 'es'>('en')
+  const { t, i18n } = useTranslation('common')
+  const lang = (i18n.language?.startsWith('es') ? 'es' : 'en') as 'en' | 'es'
   const [city, setCity] = useState<string>(DEFAULT_CITIES[0].q)
   const { data, isLoading, error } = useWeather(city, lang, 'metric')
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', padding: 16 }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ margin: 0 }}>Meteo App</h1>
-        <div>
-          <button onClick={() => setLang('en')} style={{ fontWeight: lang === 'en' ? 'bold' : 'normal' }}>EN</button>
-          <button onClick={() => setLang('es')} style={{ fontWeight: lang === 'es' ? 'bold' : 'normal', marginLeft: 8 }}>ES</button>
-        </div>
+        <h1 style={{ margin: 0 }}>{t('appName')}</h1>
+        <LanguageSwitcher />
       </header>
 
       <div style={{ marginTop: 12 }}>
-        <label>City: </label>
+  <label>{t('city')}: </label>
         <select value={city} onChange={(e) => setCity(e.target.value)}>
           {DEFAULT_CITIES.map((c: typeof DEFAULT_CITIES[number]) => (
             <option key={c.id} value={c.q}>
@@ -30,8 +30,8 @@ export default function App() {
       </div>
 
       <section style={{ marginTop: 16 }}>
-        {isLoading && <p>{lang === 'en' ? 'Loading...' : 'Cargando...'}</p>}
-        {error && <p style={{ color: 'red' }}>{lang === 'en' ? 'Error loading weather' : 'Error cargando datos'}</p>}
+  {isLoading && <p>{t('loading')}</p>}
+  {error && <p style={{ color: 'red' }}>{t('errorLoading')}</p>}
         {data && (
           <div>
             <h2>
