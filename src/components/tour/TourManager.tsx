@@ -74,6 +74,8 @@ export function TourManager({ enabled = true }: Props) {
       title: t('tour.stepDetailTitle'),
       text: t('tour.stepDetailText'),
       position: 'right',
+      // Permite scroll en este paso para que el usuario pueda desplazarse sin perder el spotlight
+      allowScroll: true,
     },
   ]
 

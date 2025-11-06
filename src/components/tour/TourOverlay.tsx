@@ -26,7 +26,10 @@ const Overlay = styled.div`
   bottom: 0;
   z-index: 9998;
   animation: ${fadeIn} 0.3s ease-out;
-  pointer-events: none;
+  /* Capturamos clicks para evitar interacción con el fondo,
+     pero permitimos scroll (no bloqueamos overflow del body si el paso lo permite). */
+  pointer-events: auto;
+  background: transparent;
 `
 
 const Spotlight = styled.div<{ top: number; left: number; width: number; height: number }>`
@@ -162,6 +165,7 @@ export type TourStep = {
   title: string
   text: string
   position?: 'top' | 'bottom' | 'left' | 'right'
+  allowScroll?: boolean
 }
 
 type Props = {
@@ -360,23 +364,47 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
   useEffect(() => {
     updateSpotlight()
 
-    // Bloquear scroll del body
+    // Gestionar scroll del body según paso
     const originalOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const step = steps[currentStep]
+    const shouldBlockScroll = !(step && step.allowScroll)
+    if (shouldBlockScroll) {
+      document.body.style.overflow = 'hidden'
+    }
 
-    // Actualizar en resize
-    const handleResize = () => updateSpotlight()
-    window.addEventListener('resize', handleResize)
+    // Reposicionar en resize/scroll
+    let ticking = false
+    const handleRecalc = () => {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(() => {
+          updateSpotlight()
+          ticking = false
+        })
+      }
+    }
+    window.addEventListener('resize', handleRecalc, { passive: true })
+    window.addEventListener('scroll', handleRecalc, { passive: true })
 
-    // Cleanup: remover clases al desmontar
+    // Observar cambios del elemento objetivo (ResizeObserver)
+    const stepEl = step?.selector ? document.querySelector(step.selector) : null
+    let ro: ResizeObserver | undefined
+    if (stepEl && 'ResizeObserver' in window) {
+      ro = new ResizeObserver(() => handleRecalc())
+      ro.observe(stepEl as Element)
+    }
+
+    // Cleanup
     return () => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('resize', handleRecalc)
+      window.removeEventListener('scroll', handleRecalc)
+      if (ro) ro.disconnect()
       document.body.style.overflow = originalOverflow
       document.querySelectorAll('.tour-highlight').forEach(el => {
         el.classList.remove('tour-highlight')
       })
     }
-  }, [updateSpotlight])
+  }, [updateSpotlight, steps, currentStep])
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -398,7 +426,8 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
 
   return (
     <>
-      <Overlay />
+      {/* Capturamos clicks para evitar interactuar con el fondo */}
+      <Overlay onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()} />
       {spotlightRect && (
         <Spotlight
           top={spotlightRect.top}
