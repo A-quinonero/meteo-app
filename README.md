@@ -1,83 +1,104 @@
-# Meteo App (React + TypeScript + Vite)
+# Meteo App (React 19 + TypeScript + Vite)
 
-Aplicación meteorológica con UX moderna que consume OpenWeather One Call 3.0 y muestra previsión por horas multi‑día, con i18n (EN/ES), selector de ciudad y manejo correcto de zonas horarias.
-
-## Estructura
-
-- `src/services/`: llamadas a API y mapeo a tipos de dominio (controlamos los datos en frontend)
-- `src/lib/`: utilidades de infraestructura (cliente HTTP Axios)
-- `src/hooks/`: lógica de React (React Query)
-- `src/helpers/`: helpers puros (fecha/husos horarios, etc.)
-- `src/config/`: constantes y configuración
-- `src/models/`: esquemas Zod y tipos de dominio
-- `src/components/`: componentes UI (layout, tarjetas, selectores, estados de carga/error)
+Aplicación meteorológica con una UX moderna: timeline “estilo iPhone” de 12 horas, tarjeta de detalle interactiva, tour de onboarding multi‑idioma, skeletons realistas y tooling profesional (ESLint + Prettier + Husky + lint‑staged + CI).
 
 ## Requisitos
 
-- Node 20.19+ (requerido por Vite 7).
-- API Key de OpenWeather.
+- Node.js 20.19+ (recomendado por Vite 7)
+- API Key de OpenWeather (One Call 3.0)
 
-## Configuración
+## Configuración rápida
 
-1. Copia `.env.example` a `.env` y coloca tu API key:
+1. Crea un archivo `.env.development.local` (o `.env`) y añade tu API key:
 
-```
+```bash
 VITE_OPENWEATHER_API_KEY=tu_api_key
 ```
 
-2. Instala dependencias e inicia el entorno de desarrollo.
+2. Instala dependencias e inicia el entorno de desarrollo:
 
-## Scripts
+```bash
+npm ci
+npm run dev
+```
 
-- `npm run dev`: arranca Vite en modo desarrollo.
-- `npm run build`: compila para producción.
-- `npm run preview`: previsualiza el build.
-- `npm test`: ejecuta tests con Vitest.
+Si la API key falta en desarrollo, verás un aviso en consola del navegador. Las peticiones se construyen con Axios añadiendo `appid` desde `import.meta.env.VITE_OPENWEATHER_API_KEY`.
 
-## Notas de arquitectura
+## Scripts disponibles
 
-- Datos de OpenWeather validados con Zod y mapeados a tipos de dominio (`WeatherForecast`, `WeatherEntry`).
-- React Query (v5) para cacheo y estados de petición (queryKey por ciudad/idioma/unidades), con `staleTime` y `gcTime` coherentes.
-- Separación de capas: servicios (datos), hooks (React), helpers (puros), UI desacoplada.
-- Formateo y comparaciones de fecha/hora con huso horario de la ciudad usando offset de `timezone_offset` (sin depender del huso del dispositivo).
+- `npm run dev` → desarrollo con Vite
+- `npm run build` → compila (tsc -b) y construye (vite build)
+- `npm run preview` → sirve el build
+- `npm run test` → Vitest
+- `npm run lint` → ESLint (flat config)
+- `npm run lint:fix` → ESLint con autofix
+- `npm run lint:ci` → ESLint sin warnings (–-max-warnings=0)
+- `npm run format` → Prettier write
+- `npm run format:check` → Prettier check
+- `npm run typecheck` → tsc sin emitir (–-noEmit)
 
-## Funcionalidad clave
+Pre‑commit: Husky ejecuta `lint-staged` (ESLint + Prettier en archivos staged) y `typecheck` para parar el commit si hay errores de TypeScript.
 
-- Ciudades por defecto: Sabadell (ES), Tokyo (JP), Los Ángeles (US).
-- i18n EN/ES con persistencia en `localStorage`.
-- One Call 3.0: forecast horario (~48h). Además de las horas, se mapea `current` (condición actual al minuto) cuando está disponible.
-- Selector de día: “Hoy” + días siguientes disponibles (calculados a partir de las horas).
-  - “Hoy” muestra solo desde la hora local actual hacia adelante para simular “tiempo real”.
-  - Días futuros muestran el día completo.
-- Tarjeta principal (WeatherSummary): muestra siempre el dato “current” para el día actual y las mín/máx del día.
-- Grid de tarjetas horarias mostrando la hora local de la ciudad.
-- Estados de carga y error con UI cuidada.
+## CI (GitHub Actions)
 
-## Tests
+Workflow en `.github/workflows/ci.yml`:
 
-- Vitest + JSDOM.
-- Ejemplo incluido: `src/test/datetime.test.ts` validando helpers de fecha/hora con offset (formato de hora y fecha local, comparación por día local).
+1. Node 20.19.x, `npm ci`
+2. `npm run lint:ci`
+3. `npm run typecheck`
+4. `npm run build`
+5. `npm test -- --run`
 
-## UX/Detalles
+## Flujo de UX
 
-- UI responsive mobile‑first, layouts con `styled-components` y efectos sutiles (glass, hover, focus visibles).
-- Accesibilidad: roles/aria en estados, y toggle de idiomas sin banderas (EN/ES).
-- El resumen permanece “sticky” en desktop, y el grid aprovecha el ancho con columnas fluidas.
+1. Selección de idioma (EN/ES)
+2. Selector de ciudad
+3. Selector de día
+4. Timeline horizontal (12 horas). En “hoy” incluye la hora en curso por defecto; en días futuros muestra todas las horas disponibles.
+5. Tarjeta de detalle de la hora seleccionada (fecha/hora local, icono, descripción, temperatura y rango min/max del día).
 
-## Próximos pasos
+Tour de onboarding: guía interactiva que resalta elementos reales de UI (idioma → ciudad → día → timeline → detalle), con posicionamiento móvil y bloqueo de scroll.
 
-- Nueva rama para:
-  - Mejorar skeletons de carga en más vistas/transiciones.
-  - Optimización de re‑renders (memoización selectiva, `React.memo`, `useMemo`/`useCallback` en límites, y selectores de React Query).
-- Añadir más tests (hooks de filtrado por día y límites en zonas horarias).
+## Arquitectura y datos
 
-## Próximos pasos (UI/UX)
+- OpenWeather One Call 3.0, validado con Zod y mapeado a tipos de dominio.
+- React Query v5 para cache y estados de petición.
+- Manejo de zonas horarias usando `timezone_offset` del API para formatear y agrupar por día local.
+- Hooks específicos encapsulan la lógica de selección de día, horas para el timeline, hora activa, etc.
 
-- Componentes accesibles para selector de idioma y ciudades.
-- Tarjetas responsivas con icono, descripción, temperatura actual, mínima y máxima.
-- Internacionalización de etiquetas y formatos (fecha/hora) en EN/ES.
-- Test unitario (opcional) sobre helpers/servicios o componentes.
+Estructura relevante:
+
+- `src/services/` → llamadas a API y mapeo (e.g., `weatherService.ts`)
+- `src/lib/http.ts` → cliente Axios que añade la API key a cada request
+- `src/hooks/` → lógica: `useTimelineHours`, `useDefaultHourEpoch`, `useActiveHourState`, `useAvailableDaysCount`, `useSelectedDayString`, `useCityOptions`, etc.
+- `src/components/weather/` → `HourlyTimeline`, `HourDetail`
+- `src/components/tour/` → `TourManager`, `TourOverlay`
+- `src/components/common/` → `LoadingState` (skeletons), `CitySelector`, `DaySelector`
+- `src/config/constants.ts` → ciudades por defecto y tipos de configuración
+
+## Estilo y calidad de código
+
+- ESLint 9 Flat Config (TypeScript + React + react-hooks + react-refresh) + `eslint-config-prettier`
+- Prettier 3 con reglas consistentes; VSCode configura `formatOnSave` y fix de ESLint
+- Husky + lint‑staged en pre‑commit: formatea y lintar archivos staged y pasa typecheck
+
+Archivos clave:
+
+- `eslint.config.js`
+- `.prettierrc.json` y `.prettierignore`
+- `.husky/pre-commit`
+- `.vscode/settings.json`
+
+## Troubleshooting
+
+- Node versión: Si Vite avisa, actualiza a Node 20.19+.
+- Husky v9: Las líneas `husky.sh` están eliminadas (deprecated). Si migras desde otra rama, asegúrate de que `.husky/pre-commit` no las incluya.
+- API key: Si falta, verás `[meteo-app] Falta VITE_OPENWEATHER_API_KEY...` en consola; añade el valor en `.env.development.local`.
+
+## Créditos y licencias
+
+Código de ejemplo para evaluación técnica. Icons de OpenWeather.
 
 ---
 
-Gracias por revisar esta prueba técnica.
+¡Gracias por revisar esta prueba técnica!
