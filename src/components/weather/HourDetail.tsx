@@ -189,15 +189,18 @@ export function HourDetail({ entry, timezoneOffset, lang }: Props) {
   const dayName = getLocalDayName(entry.epoch, timezoneOffset, lang)
   const dateShort = getLocalDateShort(entry.epoch, timezoneOffset, lang)
 
-  const labels = lang === 'en' ? {
-    time: 'Time',
-    minTemp: 'Min',
-    maxTemp: 'Max'
-  } : {
-    time: 'Hora',
-    minTemp: 'Mín',
-    maxTemp: 'Máx'
-  }
+  const labels =
+    lang === 'en'
+      ? {
+          time: 'Time',
+          minTemp: 'Min',
+          maxTemp: 'Max',
+        }
+      : {
+          time: 'Hora',
+          minTemp: 'Mín',
+          maxTemp: 'Máx',
+        }
 
   return (
     <DetailCard data-tour="hour-detail">
@@ -237,4 +240,3 @@ export function HourDetail({ entry, timezoneOffset, lang }: Props) {
 }
 
 export default HourDetail
-

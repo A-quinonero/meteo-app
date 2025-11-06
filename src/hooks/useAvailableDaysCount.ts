@@ -4,7 +4,10 @@ import type { WeatherEntry } from '../models/weather'
 /**
  * Calcula cuántos días locales distintos hay en las entradas (máximo 5).
  */
-export function useAvailableDaysCount(entries: WeatherEntry[], timezoneOffsetSeconds: number): number {
+export function useAvailableDaysCount(
+  entries: WeatherEntry[],
+  timezoneOffsetSeconds: number,
+): number {
   return useMemo(() => {
     if (!entries || entries.length === 0) return 1
     const set = new Set<string>()

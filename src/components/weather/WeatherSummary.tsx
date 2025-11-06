@@ -6,7 +6,9 @@ const Card = styled.div`
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   border-radius: 24px;
   padding: 32px 24px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.3),
+    0 10px 10px -5px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(59, 130, 246, 0.2);
 
   @media (min-width: 640px) {
@@ -178,7 +180,14 @@ type Props = {
   timezoneOffset: number
 }
 
-export function WeatherSummary({ current, dailyMin, dailyMax, lang, cityName, timezoneOffset }: Props) {
+export function WeatherSummary({
+  current,
+  dailyMin,
+  dailyMax,
+  lang,
+  cityName,
+  timezoneOffset,
+}: Props) {
   const updateTime = formatLocalDateTime(current.epoch, timezoneOffset, lang)
 
   return (

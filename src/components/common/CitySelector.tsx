@@ -27,7 +27,7 @@ const HelperText = styled.p`
 
 const SelectWrapper = styled.div`
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -66,7 +66,9 @@ const Select = styled.select`
   &:focus {
     outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    box-shadow:
+      0 0 0 3px rgba(59, 130, 246, 0.15),
+      0 4px 6px -1px rgba(0, 0, 0, 0.2);
   }
 
   option {
@@ -96,13 +98,13 @@ export function CitySelector({ label, value, options, onChange, helperText }: Pr
     <Container data-tour="city-selector">
       <Label htmlFor="city-select">{label}</Label>
       <SelectWrapper>
-        <Select 
-          id="city-select" 
-          value={value} 
-          onChange={(e) => onChange(e.target.value)}
+        <Select
+          id="city-select"
+          value={value}
+          onChange={e => onChange(e.target.value)}
           aria-label={label}
         >
-          {options.map((o) => (
+          {options.map(o => (
             <option key={o.id} value={o.value}>
               {o.label}
             </option>

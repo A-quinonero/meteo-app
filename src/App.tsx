@@ -25,42 +25,38 @@ export default function App() {
   const lang = (i18n.language?.startsWith('es') ? 'es' : 'en') as 'en' | 'es'
   const [cityId, setCityId] = useState<string>(DEFAULT_CITIES[0].id)
   const [selectedDay, setSelectedDay] = useState<number>(0) // 0 = hoy
-  
-  const selectedCity = DEFAULT_CITIES.find((c) => c.id === cityId) as City
+
+  const selectedCity = DEFAULT_CITIES.find(c => c.id === cityId) as City
   const { data, isLoading, error } = useWeather(selectedCity, lang, 'metric')
-  
+
   const timezoneOffset = data?.timezoneOffset || 0
-  
+
   // Calcular día seleccionado en formato YYYY-MM-DD
   const selectedDayString = useSelectedDayString(selectedDay, timezoneOffset)
-  
+
   // Obtener horas para la timeline según el día seleccionado
-  const timelineHours = useTimelineHours(
-    data?.entries || [],
-    timezoneOffset,
-    selectedDayString
-  )
-  
+  const timelineHours = useTimelineHours(data?.entries || [], timezoneOffset, selectedDayString)
+
   // Gestionar hora activa (selección y entry memoizada)
   const { activeHourEpoch, selectedHourEntry, onSelectHour } = useActiveHourState(
     timelineHours,
     timezoneOffset,
-    selectedDayString
+    selectedDayString,
   )
-  
+
   // Calcular días disponibles (memo)
   const availableDaysCount = useAvailableDaysCount(data?.entries || [], timezoneOffset)
-  
+
   // Asegurar que el día seleccionado esté dentro de rango
   useEffect(() => {
     if (selectedDay > availableDaysCount - 1) {
       setSelectedDay(availableDaysCount - 1)
     }
   }, [availableDaysCount, selectedDay])
-  
+
   // Generar opciones de días
   const dayOptions = useDayOptions(timezoneOffset, lang, availableDaysCount)
-  
+
   const cityOptions = useCityOptions(lang)
 
   return (
@@ -69,15 +65,19 @@ export default function App() {
 
       <MainContainer>
         <CitySelectorWrapper data-tour="city-selector">
-          <CitySelector 
-            label={lang === 'en' ? 'Select a city' : 'Selecciona una ciudad'} 
-            value={cityId} 
-            options={cityOptions} 
-            onChange={(newCityId) => {
+          <CitySelector
+            label={lang === 'en' ? 'Select a city' : 'Selecciona una ciudad'}
+            value={cityId}
+            options={cityOptions}
+            onChange={newCityId => {
               setCityId(newCityId)
               setSelectedDay(0)
             }}
-            helperText={lang === 'en' ? 'Real-time weather forecast' : 'Previsión meteorológica en tiempo real'}
+            helperText={
+              lang === 'en'
+                ? 'Real-time weather forecast'
+                : 'Previsión meteorológica en tiempo real'
+            }
           />
         </CitySelectorWrapper>
 
@@ -86,25 +86,25 @@ export default function App() {
         {data && data.entries.length > 0 && (
           <>
             <DaySelectorWrapper data-tour="day-selector">
-              <DaySelector 
-                options={dayOptions} 
-                selectedDay={selectedDay} 
-                onChange={setSelectedDay} 
+              <DaySelector
+                options={dayOptions}
+                selectedDay={selectedDay}
+                onChange={setSelectedDay}
               />
             </DaySelectorWrapper>
 
             {timelineHours.length > 0 && selectedHourEntry ? (
               <FadeTransition>
                 <ContentLayout>
-                  <HourlyTimeline 
-                    entries={timelineHours} 
-                    timezoneOffset={timezoneOffset} 
+                  <HourlyTimeline
+                    entries={timelineHours}
+                    timezoneOffset={timezoneOffset}
                     lang={lang}
                     isToday={selectedDay === 0}
                     selectedEpoch={activeHourEpoch || undefined}
                     onSelectHour={onSelectHour}
                   />
-                  <HourDetail 
+                  <HourDetail
                     entry={selectedHourEntry}
                     timezoneOffset={timezoneOffset}
                     lang={lang}
@@ -112,10 +112,10 @@ export default function App() {
                 </ContentLayout>
               </FadeTransition>
             ) : (
-              <ErrorState 
+              <ErrorState
                 message={
-                  lang === 'en' 
-                    ? 'No data available for the selected day' 
+                  lang === 'en'
+                    ? 'No data available for the selected day'
                     : 'No hay datos disponibles para el día seleccionado'
                 }
               />
@@ -125,7 +125,7 @@ export default function App() {
       </MainContainer>
 
       <Footer lang={lang} />
-      
+
       <TourManager enabled={!isLoading && !!data} />
     </PageWrapper>
   )
@@ -133,14 +133,14 @@ export default function App() {
 
 const PageWrapper = styled.div`
   min-height: 100vh;
-  width:100vw;
+  width: 100vw;
   background: linear-gradient(to bottom, #0a0e27 0%, #1a1f3a 100%);
   color: #f3f4f6;
 `
 
 const MainContainer = styled.main`
   width: 100%;
-  height:100vh;
+  height: 100vh;
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 16px 32px;
@@ -183,5 +183,3 @@ const ContentLayout = styled.div`
     gap: 32px;
   }
 `
-
- 

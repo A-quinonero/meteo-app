@@ -68,7 +68,7 @@ type Props = {
 export function ForecastGrid({ entries, lang, timezoneOffset }: Props) {
   const count = entries.length
   const badge = lang === 'en' ? `${count} hours` : `${count} horas`
-  
+
   return (
     <Section>
       <TitleRow>
@@ -76,7 +76,7 @@ export function ForecastGrid({ entries, lang, timezoneOffset }: Props) {
         <InfoBadge>{badge}</InfoBadge>
       </TitleRow>
       <Grid>
-        {entries.map((e) => (
+        {entries.map(e => (
           <ForecastCard key={e.epoch} entry={e} timezoneOffset={timezoneOffset} />
         ))}
       </Grid>

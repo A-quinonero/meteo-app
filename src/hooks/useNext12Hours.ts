@@ -5,7 +5,7 @@ import type { WeatherEntry } from '../models/weather'
  * Hook que retorna las horas para la timeline según el día seleccionado:
  * - Día actual: próximas 12 horas desde ahora
  * - Días futuros: todas las horas disponibles del día
- * 
+ *
  * @param entries - Array completo de entradas de clima
  * @param timezoneOffsetSeconds - Offset de zona horaria en segundos
  * @param selectedDay - Día seleccionado en formato YYYY-MM-DD
@@ -14,7 +14,7 @@ import type { WeatherEntry } from '../models/weather'
 export function useTimelineHours(
   entries: WeatherEntry[],
   timezoneOffsetSeconds: number,
-  selectedDay: string
+  selectedDay: string,
 ): WeatherEntry[] {
   return useMemo(() => {
     if (!entries || entries.length === 0) return []
@@ -22,18 +22,18 @@ export function useTimelineHours(
     // Hora actual en la zona horaria local de la ciudad
     const nowUtc = Math.floor(Date.now() / 1000)
     const nowLocal = nowUtc + timezoneOffsetSeconds
-    
+
     // Obtener el día actual en la zona horaria local
     const currentDate = new Date((nowUtc + timezoneOffsetSeconds) * 1000)
     const currentDay = currentDate.toISOString().split('T')[0]
-    
+
     // Si es el día actual, incluir la hora en curso (bloque horario actual)
     // Estrategia: buscar el primer índice futuro y retroceder uno para incluir la hora actual.
     if (selectedDay === currentDay) {
       if (entries.length === 0) return []
 
       // Encontrar el índice del primer elemento cuyo inicio de hora local es >= ahora
-      let futureIdx = entries.findIndex((entry) => (entry.epoch + timezoneOffsetSeconds) >= nowLocal)
+      let futureIdx = entries.findIndex(entry => entry.epoch + timezoneOffsetSeconds >= nowLocal)
       if (futureIdx === -1) {
         // No hay futuros: empezar desde el último disponible
         futureIdx = entries.length
@@ -61,9 +61,9 @@ export function useTimelineHours(
       }
       return result
     }
-    
+
     // Si es un día futuro, devolver todas las horas de ese día
-    return entries.filter((entry) => {
+    return entries.filter(entry => {
       const entryDate = new Date((entry.epoch + timezoneOffsetSeconds) * 1000)
       const entryDay = entryDate.toISOString().split('T')[0]
       return entryDay === selectedDay

@@ -17,13 +17,13 @@ export function TourManager({ enabled = true }: Props) {
 
     // Verificar si el usuario ya completó el tour
     const tourCompleted = localStorage.getItem(TOUR_STORAGE_KEY)
-    
+
     if (!tourCompleted) {
       // Esperar un momento para que la UI cargue
       const timer = setTimeout(() => {
         setShowTour(true)
       }, 800)
-      
+
       return () => clearTimeout(timer)
     }
   }, [enabled])
@@ -79,13 +79,7 @@ export function TourManager({ enabled = true }: Props) {
 
   if (!showTour) return null
 
-  return (
-    <TourOverlay
-      steps={steps}
-      onComplete={handleComplete}
-      onSkip={handleSkip}
-    />
-  )
+  return <TourOverlay steps={steps} onComplete={handleComplete} onSkip={handleSkip} />
 }
 
 export default TourManager
