@@ -5,7 +5,6 @@ import { useWeather } from './hooks/useWeather'
 import { useDayOptions } from './hooks/useDayOptions'
 import { useTimelineHours } from './hooks/useNext12Hours'
 import { useSelectedDayString } from './hooks/useSelectedDayString'
-// import { useDefaultHourEpoch } from './hooks/useDefaultHourEpoch'
 import { useAvailableDaysCount } from './hooks/useAvailableDaysCount'
 import { useActiveHourState } from './hooks/useActiveHourState'
 import { useCityOptions } from './hooks/useCityOptions'
@@ -97,23 +96,19 @@ export default function App() {
             {timelineHours.length > 0 && selectedHourEntry ? (
               <FadeTransition>
                 <ContentLayout>
-                  <div data-tour="hourly-timeline">
-                    <HourlyTimeline 
-                      entries={timelineHours} 
-                      timezoneOffset={timezoneOffset} 
-                      lang={lang}
-                      isToday={selectedDay === 0}
-                      selectedEpoch={activeHourEpoch || undefined}
-                      onSelectHour={onSelectHour}
-                    />
-                  </div>
-                  <div data-tour="hour-detail">
-                    <HourDetail 
-                      entry={selectedHourEntry}
-                      timezoneOffset={timezoneOffset}
-                      lang={lang}
-                    />
-                  </div>
+                  <HourlyTimeline 
+                    entries={timelineHours} 
+                    timezoneOffset={timezoneOffset} 
+                    lang={lang}
+                    isToday={selectedDay === 0}
+                    selectedEpoch={activeHourEpoch || undefined}
+                    onSelectHour={onSelectHour}
+                  />
+                  <HourDetail 
+                    entry={selectedHourEntry}
+                    timezoneOffset={timezoneOffset}
+                    lang={lang}
+                  />
                 </ContentLayout>
               </FadeTransition>
             ) : (
@@ -145,6 +140,7 @@ const PageWrapper = styled.div`
 
 const MainContainer = styled.main`
   width: 100%;
+  height:100vh;
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 16px 32px;

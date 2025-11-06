@@ -200,7 +200,7 @@ export function HourDetail({ entry, timezoneOffset, lang }: Props) {
   }
 
   return (
-    <DetailCard>
+    <DetailCard data-tour="hour-detail">
       <Header>
         <DayInfo>
           <DayText>

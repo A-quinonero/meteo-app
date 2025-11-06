@@ -1,5 +1,5 @@
 {
-  "appName": "Meteo App",
+  "appName": "IsEazy - Meteo App",
   "language": "Idioma",
   "english": "Inglés",
   "spanish": "Español",
@@ -8,6 +8,8 @@
   "errorLoading": "Error cargando datos",
   "tour": {
     "welcome": "¡Bienvenido a Meteo App!",
+    "welcomeTitle": "¡Bienvenido a Meteo App!",
+    "welcomeText": "Un recorrido rápido para que te ubiques.",
     "step1Title": "Selecciona una Ciudad",
     "step1Text": "Elige entre Sabadell, Tokio o Los Ángeles para ver el clima en tiempo real.",
     "step2Title": "Cambia de Idioma",
@@ -19,7 +21,7 @@
   "stepTimelineTitle": "Línea Temporal",
   "stepTimelineText": "Desliza o haz scroll en la línea temporal. Toca una hora para actualizar el detalle.",
   "stepDetailTitle": "Detalle por Hora",
-  "stepDetailText": "Aquí verás la hora seleccionada: fecha, hora, icono y rango de temperatura.",
+  "stepDetailText": "Aquí verás la hora seleccionada: fecha, hora, icono y temperatura.",
     "next": "Siguiente",
     "prev": "Anterior",
     "finish": "¡Entendido!",
