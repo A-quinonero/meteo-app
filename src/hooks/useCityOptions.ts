@@ -7,7 +7,7 @@ export function useCityOptions(lang: 'en' | 'es'): CityOption[] {
     () =>
       DEFAULT_CITIES.map(c => ({
         id: c.id,
-        value: c.idc,
+        value: c.id,
         label: c.label[lang],
       })),
     [lang],

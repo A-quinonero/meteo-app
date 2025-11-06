@@ -1,5 +1,8 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+set -e
 
-# Run lint-staged
+# 1) Lint y formato sólo en archivos staged
 npx lint-staged
+
+# 2) Typecheck de todo el proyecto para atrapar errores de TS
+npm run typecheck --silent
