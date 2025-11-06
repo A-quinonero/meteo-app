@@ -178,7 +178,7 @@ export function HourlyTimeline({ entries, timezoneOffset, lang, selectedEpoch, o
   }, [isToday, lang, timelineEntries, timezoneOffset])
 
   return (
-    <Container>
+    <Container data-tour="hourly-timeline">
       <Title>{title}</Title>
       <Timeline>
         {timelineEntries.map((entry) => {

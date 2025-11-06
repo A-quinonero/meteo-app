@@ -154,7 +154,7 @@ const ProgressDot = styled.div<{ active: boolean }>`
 `
 
 export type TourStep = {
-  selector: string
+  selector?: string
   title: string
   text: string
   position?: 'top' | 'bottom' | 'left' | 'right'
@@ -182,6 +182,30 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
       el.classList.remove('tour-highlight')
     })
     
+    // Si no hay selector (paso de bienvenida), centrar el tooltip y no mostrar spotlight
+    if (!step.selector) {
+      setSpotlightRect(null)
+
+      const isMobile = window.innerWidth <= 640
+      if (isMobile) {
+        setTooltipStyle({
+          top: '50%',
+          left: '16px',
+          right: '16px',
+          transform: 'translateY(-50%)',
+          width: 'auto',
+          maxWidth: 'none',
+        })
+      } else {
+        setTooltipStyle({
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        })
+      }
+      return
+    }
+
     const element = document.querySelector(step.selector)
 
     if (element) {

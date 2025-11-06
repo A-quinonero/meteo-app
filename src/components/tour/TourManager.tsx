@@ -40,28 +40,39 @@ export function TourManager({ enabled = true }: Props) {
 
   // Definir los pasos del tour con selectores específicos
   const steps: TourStep[] = [
+    // 1) Idioma primero
     {
       selector: '[data-tour="language-switcher"]',
       title: t('tour.step2Title'),
       text: t('tour.step2Text'),
       position: 'bottom',
     },
+    // 2) Selector de ciudad
     {
       selector: '[data-tour="city-selector"]',
       title: t('tour.step1Title'),
       text: t('tour.step1Text'),
       position: 'bottom',
     },
+    // 3) Selector de día
     {
       selector: '[data-tour="day-selector"]',
       title: t('tour.step3Title'),
       text: t('tour.step3Text'),
       position: 'bottom',
     },
+    // 4) Timeline interactiva
     {
-      selector: '[data-tour="weather-summary"]',
-      title: t('tour.step4Title'),
-      text: t('tour.step4Text'),
+      selector: '[data-tour="hourly-timeline"]',
+      title: t('tour.stepTimelineTitle'),
+      text: t('tour.stepTimelineText'),
+      position: 'bottom',
+    },
+    // 5) Detalle de la hora seleccionada
+    {
+      selector: '[data-tour="hour-detail"]',
+      title: t('tour.stepDetailTitle'),
+      text: t('tour.stepDetailText'),
       position: 'right',
     },
   ]

@@ -5,7 +5,6 @@ import { useWeather } from './hooks/useWeather'
 import { useDayOptions } from './hooks/useDayOptions'
 import { useTimelineHours } from './hooks/useNext12Hours'
 import { useSelectedDayString } from './hooks/useSelectedDayString'
-// import { useDefaultHourEpoch } from './hooks/useDefaultHourEpoch'
 import { useAvailableDaysCount } from './hooks/useAvailableDaysCount'
 import { useActiveHourState } from './hooks/useActiveHourState'
 import { useCityOptions } from './hooks/useCityOptions'
@@ -141,6 +140,7 @@ const PageWrapper = styled.div`
 
 const MainContainer = styled.main`
   width: 100%;
+  height:100vh;
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 16px 32px;
