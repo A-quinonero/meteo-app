@@ -228,7 +228,7 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
       const position = step.position || 'bottom'
       const tooltipPadding = isMobile ? 12 : 20
       const tooltipWidth = isMobile ? window.innerWidth - 32 : 360
-      const tooltipHeight = 240 // estimado más conservador
+      const tooltipHeight = 300 // estimado más conservador (evita corte en desktop)
       const margin = 16
 
       let style: React.CSSProperties = {}

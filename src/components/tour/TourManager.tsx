@@ -73,7 +73,7 @@ export function TourManager({ enabled = true }: Props) {
       selector: '[data-tour="hour-detail"]',
       title: t('tour.stepDetailTitle'),
       text: t('tour.stepDetailText'),
-      position: 'right',
+      position: 'top',
       // Permite scroll en este paso para que el usuario pueda desplazarse sin perder el spotlight
       allowScroll: true,
     },
