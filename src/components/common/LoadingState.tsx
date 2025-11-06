@@ -32,7 +32,7 @@ const Skeleton = styled.div`
   border-radius: 20px;
   position: relative;
   overflow: hidden;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -60,7 +60,9 @@ const SummarySkeletonWrapper = styled.div`
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   border-radius: 24px;
   padding: 32px 24px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.3),
+    0 10px 10px -5px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(59, 130, 246, 0.2);
   display: flex;
   flex-direction: column;
@@ -177,7 +179,7 @@ export function LoadingState() {
       <SummarySkeletonWrapper>
         <SkeletonLine width="60%" height="24px" />
         <SkeletonLine width="40%" height="14px" />
-        
+
         <SummaryContent>
           <SkeletonCircle size="120px" />
           <SkeletonLine width="80px" height="48px" />

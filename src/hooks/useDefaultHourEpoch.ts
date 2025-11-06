@@ -5,7 +5,7 @@ import type { WeatherEntry } from '../models/weather'
  * Hook que obtiene la hora por defecto a seleccionar:
  * - Si es día actual: la hora más cercana a ahora
  * - Si es día futuro: la primera hora del día
- * 
+ *
  * @param timelineEntries - Entradas de la timeline
  * @param timezoneOffsetSeconds - Offset de zona horaria en segundos
  * @param selectedDayString - Día seleccionado en formato YYYY-MM-DD
@@ -14,7 +14,7 @@ import type { WeatherEntry } from '../models/weather'
 export function useDefaultHourEpoch(
   timelineEntries: WeatherEntry[],
   timezoneOffsetSeconds: number,
-  selectedDayString: string
+  selectedDayString: string,
 ): number | null {
   return useMemo(() => {
     if (timelineEntries.length === 0) return null
@@ -29,12 +29,12 @@ export function useDefaultHourEpoch(
       // Buscar entrada cuyo bloque horario contiene el instante actual
       const currentHour = timelineEntries.find(entry => {
         const entryLocal = entry.epoch + timezoneOffsetSeconds
-        return nowLocal >= entryLocal && nowLocal < (entryLocal + 3600)
+        return nowLocal >= entryLocal && nowLocal < entryLocal + 3600
       })
-      
+
       // PRIORIDAD 1: Si encontramos la hora actual, retornarla
       if (currentHour) return currentHour.epoch
-      
+
       // PRIORIDAD 2: Si no hay hora en curso (p.ej., datos con huecos), buscar la hora pasada más reciente
       // (esto captura el caso donde estamos entre dos horas, ej: 14:30 → mostrar hora 14:00)
       const recentPastHour = timelineEntries
@@ -43,9 +43,9 @@ export function useDefaultHourEpoch(
           return entryLocal <= nowLocal
         })
         .sort((a, b) => b.epoch - a.epoch)[0] // Ordenar descendente, tomar la más reciente
-      
+
       if (recentPastHour) return recentPastHour.epoch
-      
+
       // PRIORIDAD 3: Si todas las horas son futuras, tomar la primera
       return timelineEntries[0].epoch
     }

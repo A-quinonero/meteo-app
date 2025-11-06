@@ -29,8 +29,8 @@ const TooltipContent = styled.div<{ show: boolean }>`
   z-index: 1000;
   border: 1px solid rgba(59, 130, 246, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  opacity: ${(props) => (props.show ? 1 : 0)};
-  visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
+  opacity: ${props => (props.show ? 1 : 0)};
+  visibility: ${props => (props.show ? 'visible' : 'hidden')};
   transition: all 200ms ease;
 
   &::after {

@@ -96,8 +96,10 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'ghost' }>`
   cursor: pointer;
   transition: all 200ms ease;
   border: none;
-  
-  ${props => props.variant === 'primary' && `
+
+  ${props =>
+    props.variant === 'primary' &&
+    `
     background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
     color: #ffffff;
     
@@ -106,8 +108,10 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'ghost' }>`
       box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
     }
   `}
-  
-  ${props => props.variant === 'secondary' && `
+
+  ${props =>
+    props.variant === 'secondary' &&
+    `
     background: rgba(59, 130, 246, 0.15);
     color: #60a5fa;
     border: 1px solid rgba(59, 130, 246, 0.3);
@@ -118,7 +122,9 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'ghost' }>`
     }
   `}
   
-  ${props => props.variant === 'ghost' && `
+  ${props =>
+    props.variant === 'ghost' &&
+    `
     background: transparent;
     color: #9ca3af;
     

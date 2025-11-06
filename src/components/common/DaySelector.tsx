@@ -31,13 +31,13 @@ const Container = styled.div`
 const DayButton = styled.button<{ isActive: boolean }>`
   flex-shrink: 0;
   padding: 12px 16px;
-  border: 1px solid ${(props) => (props.isActive ? '#3b82f6' : 'rgba(59, 130, 246, 0.2)')};
+  border: 1px solid ${props => (props.isActive ? '#3b82f6' : 'rgba(59, 130, 246, 0.2)')};
   border-radius: 12px;
-  background: ${(props) =>
+  background: ${props =>
     props.isActive
       ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.15) 100%)'
       : 'rgba(30, 41, 59, 0.6)'};
-  color: ${(props) => (props.isActive ? '#60a5fa' : '#9ca3af')};
+  color: ${props => (props.isActive ? '#60a5fa' : '#9ca3af')};
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -47,11 +47,11 @@ const DayButton = styled.button<{ isActive: boolean }>`
 
   &:hover {
     border-color: #3b82f6;
-    background: ${(props) =>
+    background: ${props =>
       props.isActive
         ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.2) 100%)'
         : 'rgba(30, 41, 59, 0.8)'};
-    color: ${(props) => (props.isActive ? '#93c5fd' : '#d1d5db')};
+    color: ${props => (props.isActive ? '#93c5fd' : '#d1d5db')};
   }
 
   &:active {
@@ -101,7 +101,7 @@ type Props = {
 export function DaySelector({ options, selectedDay, onChange }: Props) {
   return (
     <Container role="tablist" aria-label="Day selector" data-tour="day-selector">
-      {options.map((option) => (
+      {options.map(option => (
         <DayButton
           key={option.value}
           isActive={selectedDay === option.value}

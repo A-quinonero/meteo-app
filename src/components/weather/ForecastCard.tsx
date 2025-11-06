@@ -171,7 +171,7 @@ export function ForecastCard({ entry, timezoneOffset }: Props) {
 
   return (
     <Card>
-  <Time dateTime={entry.timeISO}>{time}</Time>
+      <Time dateTime={entry.timeISO}>{time}</Time>
       <IconWrapper>
         <img src={entry.icon} alt={entry.description} loading="lazy" />
       </IconWrapper>

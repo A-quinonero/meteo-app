@@ -12,11 +12,11 @@ const Container = styled.div`
   overflow-x: auto;
   overflow-y: hidden;
   margin-bottom: 24px;
-  
+
   /* Ocultar scrollbar pero permitir scroll */
   scrollbar-width: none;
   -ms-overflow-style: none;
-  
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -65,11 +65,15 @@ const TimeSlot = styled.div<{ isNow?: boolean; isSelected?: boolean }>`
   gap: 8px;
   min-width: 60px;
   position: relative;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
   cursor: pointer;
-  opacity: ${props => props.isSelected ? 1 : 0.7};
+  opacity: ${props => (props.isSelected ? 1 : 0.7)};
 
-  ${props => props.isNow && `
+  ${props =>
+    props.isNow &&
+    `
     &::before {
       content: '';
       position: absolute;
@@ -84,7 +88,9 @@ const TimeSlot = styled.div<{ isNow?: boolean; isSelected?: boolean }>`
     }
   `}
 
-  ${props => props.isSelected && `
+  ${props =>
+    props.isSelected &&
+    `
     &::after {
       content: '';
       position: absolute;
@@ -106,8 +112,8 @@ const TimeSlot = styled.div<{ isNow?: boolean; isSelected?: boolean }>`
 
 const Time = styled.div<{ isNow?: boolean; isSelected?: boolean }>`
   font-size: 0.8125rem;
-  font-weight: ${props => (props.isNow || props.isSelected) ? '700' : '500'};
-  color: ${props => (props.isNow || props.isSelected) ? '#60a5fa' : '#9ca3af'};
+  font-weight: ${props => (props.isNow || props.isSelected ? '700' : '500')};
+  color: ${props => (props.isNow || props.isSelected ? '#60a5fa' : '#9ca3af')};
   letter-spacing: 0.3px;
 
   @media (min-width: 640px) {
@@ -135,12 +141,14 @@ const IconWrapper = styled.div`
 const Temp = styled.div<{ isNow?: boolean; isSelected?: boolean }>`
   font-size: 1.125rem;
   font-weight: 700;
-  color: ${props => (props.isNow || props.isSelected) ? '#ffffff' : '#f3f4f6'};
-  background: ${props => (props.isNow || props.isSelected)
-    ? 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)'
-    : 'transparent'
-  };
-  ${props => (props.isNow || props.isSelected) && `
+  color: ${props => (props.isNow || props.isSelected ? '#ffffff' : '#f3f4f6')};
+  background: ${props =>
+    props.isNow || props.isSelected
+      ? 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)'
+      : 'transparent'};
+  ${props =>
+    (props.isNow || props.isSelected) &&
+    `
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -160,7 +168,14 @@ type Props = {
   isToday?: boolean
 }
 
-export function HourlyTimeline({ entries, timezoneOffset, lang, selectedEpoch, onSelectHour, isToday = false }: Props) {
+export function HourlyTimeline({
+  entries,
+  timezoneOffset,
+  lang,
+  selectedEpoch,
+  onSelectHour,
+  isToday = false,
+}: Props) {
   // Tomar solo las próximas 12 horas para la línea temporal
   const timelineEntries = entries.slice(0, 12)
 
@@ -181,25 +196,29 @@ export function HourlyTimeline({ entries, timezoneOffset, lang, selectedEpoch, o
     <Container data-tour="hourly-timeline">
       <Title>{title}</Title>
       <Timeline>
-        {timelineEntries.map((entry) => {
+        {timelineEntries.map(entry => {
           const time = formatLocalTime(entry.epoch, timezoneOffset)
           const entryLocal = entry.epoch + timezoneOffset
           // La hora en curso es el bloque donde now está dentro de [entryLocal, entryLocal + 3600)
-          const isNow = nowLocal >= entryLocal && nowLocal < (entryLocal + 3600)
+          const isNow = nowLocal >= entryLocal && nowLocal < entryLocal + 3600
           const isSelected = selectedEpoch === entry.epoch
 
           return (
-            <TimeSlot 
-              key={entry.epoch} 
-              isNow={isNow} 
+            <TimeSlot
+              key={entry.epoch}
+              isNow={isNow}
               isSelected={isSelected}
               onClick={() => onSelectHour?.(entry.epoch)}
             >
-              <Time isNow={isNow} isSelected={isSelected}>{time}</Time>
+              <Time isNow={isNow} isSelected={isSelected}>
+                {time}
+              </Time>
               <IconWrapper>
                 <img src={entry.icon} alt={entry.description} loading="lazy" />
               </IconWrapper>
-              <Temp isNow={isNow} isSelected={isSelected}>{Math.round(entry.temp)}°</Temp>
+              <Temp isNow={isNow} isSelected={isSelected}>
+                {Math.round(entry.temp)}°
+              </Temp>
             </TimeSlot>
           )
         })}

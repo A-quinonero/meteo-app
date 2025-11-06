@@ -21,13 +21,17 @@ const Button = styled.button<{ isActive: boolean }>`
   cursor: pointer;
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
   letter-spacing: 0.3px;
-  background: ${(props) => (props.isActive ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'transparent')};
-  color: ${(props) => (props.isActive ? '#ffffff' : '#9ca3af')};
-  box-shadow: ${(props) => (props.isActive ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none')};
+  background: ${props =>
+    props.isActive ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'transparent'};
+  color: ${props => (props.isActive ? '#ffffff' : '#9ca3af')};
+  box-shadow: ${props => (props.isActive ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none')};
 
   &:hover {
-    background: ${(props) => (props.isActive ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'rgba(59, 130, 246, 0.1)')};
-    color: ${(props) => (props.isActive ? '#ffffff' : '#e5e7eb')};
+    background: ${props =>
+      props.isActive
+        ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)'
+        : 'rgba(59, 130, 246, 0.1)'};
+    color: ${props => (props.isActive ? '#ffffff' : '#e5e7eb')};
   }
 
   &:active {
@@ -46,17 +50,17 @@ export function LanguageSwitcher() {
 
   return (
     <Container role="group" aria-label="Language selector" data-tour="language-switcher">
-      <Button 
-        isActive={current === 'en'} 
-        onClick={() => changeLanguage('en')} 
+      <Button
+        isActive={current === 'en'}
+        onClick={() => changeLanguage('en')}
         aria-pressed={current === 'en'}
         title="Switch to English"
       >
         EN
       </Button>
-      <Button 
-        isActive={current === 'es'} 
-        onClick={() => changeLanguage('es')} 
+      <Button
+        isActive={current === 'es'}
+        onClick={() => changeLanguage('es')}
         aria-pressed={current === 'es'}
         title="Cambiar a Español"
       >

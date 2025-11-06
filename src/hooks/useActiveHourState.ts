@@ -15,14 +15,14 @@ export type ActiveHourState = {
 export function useActiveHourState(
   timelineEntries: WeatherEntry[],
   timezoneOffsetSeconds: number,
-  selectedDayString: string
+  selectedDayString: string,
 ): ActiveHourState {
   const [selectedEpoch, setSelectedEpoch] = useState<number | null>(null)
 
   const defaultEpoch = useDefaultHourEpoch(
     timelineEntries,
     timezoneOffsetSeconds,
-    selectedDayString
+    selectedDayString,
   )
 
   const activeHourEpoch = selectedEpoch ?? defaultEpoch ?? undefined
@@ -30,7 +30,7 @@ export function useActiveHourState(
   const selectedHourEntry = useMemo(() => {
     if (!activeHourEpoch) return undefined
     // Memoiza la búsqueda para evitar recalcular en cada render
-    return timelineEntries.find((e) => e.epoch === activeHourEpoch)
+    return timelineEntries.find(e => e.epoch === activeHourEpoch)
   }, [timelineEntries, activeHourEpoch])
 
   // Reset al cambiar el día (o timeline)

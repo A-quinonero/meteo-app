@@ -37,9 +37,10 @@ const Spotlight = styled.div<{ top: number; left: number; width: number; height:
   height: ${props => props.height + 8}px;
   border: 3px solid #3b82f6;
   border-radius: 16px;
-  box-shadow: 0 0 0 9999px rgba(10, 14, 39, 0.90),
-              0 0 40px rgba(59, 130, 246, 0.8),
-              inset 0 0 0 1px rgba(59, 130, 246, 0.3);
+  box-shadow:
+    0 0 0 9999px rgba(10, 14, 39, 0.9),
+    0 0 40px rgba(59, 130, 246, 0.8),
+    inset 0 0 0 1px rgba(59, 130, 246, 0.3);
   z-index: 9999;
   pointer-events: none;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -99,7 +100,9 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   transition: all 0.2s ease;
   border: none;
 
-  ${props => props.variant === 'primary' ? `
+  ${props =>
+    props.variant === 'primary'
+      ? `
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     
@@ -107,7 +110,8 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
       transform: translateY(-2px);
       box-shadow: 0 8px 16px rgba(59, 130, 246, 0.4);
     }
-  ` : `
+  `
+      : `
     background: rgba(59, 130, 246, 0.1);
     color: #9ca3af;
     border: 1px solid rgba(59, 130, 246, 0.3);
@@ -149,7 +153,7 @@ const ProgressDot = styled.div<{ active: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: ${props => props.active ? '#3b82f6' : 'rgba(59, 130, 246, 0.3)'};
+  background: ${props => (props.active ? '#3b82f6' : 'rgba(59, 130, 246, 0.3)')};
   transition: all 0.3s ease;
 `
 
@@ -176,12 +180,12 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
     if (currentStep >= steps.length) return
 
     const step = steps[currentStep]
-    
+
     // Remover clase del elemento anterior
     document.querySelectorAll('.tour-highlight').forEach(el => {
       el.classList.remove('tour-highlight')
     })
-    
+
     // Si no hay selector (paso de bienvenida), centrar el tooltip y no mostrar spotlight
     if (!step.selector) {
       setSpotlightRect(null)
@@ -211,7 +215,7 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
     if (element) {
       // Añadir clase para elevar z-index
       element.classList.add('tour-highlight')
-      
+
       const rect = element.getBoundingClientRect()
       setSpotlightRect(rect)
 
@@ -222,7 +226,7 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
       const tooltipWidth = isMobile ? window.innerWidth - 32 : 360
       const tooltipHeight = 240 // estimado más conservador
       const margin = 16
-      
+
       let style: React.CSSProperties = {}
       let finalPosition = position
 
@@ -230,7 +234,7 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
       if (isMobile) {
         const spaceBottom = window.innerHeight - rect.bottom
         const spaceTop = rect.top
-        
+
         // Priorizar bottom si hay más espacio allí
         if (spaceBottom >= tooltipHeight + tooltipPadding + margin) {
           // Posicionar debajo del elemento
@@ -262,7 +266,7 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
           }
         }
         setTooltipStyle(style)
-        
+
         // Scroll para centrar el elemento
         element.scrollIntoView({
           behavior: 'smooth',
@@ -304,39 +308,39 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
         case 'bottom':
           style = {
             top: rect.bottom + tooltipPadding,
-            left: Math.max(margin, Math.min(
-              rect.left + rect.width / 2,
-              window.innerWidth - tooltipWidth / 2 - margin
-            )),
+            left: Math.max(
+              margin,
+              Math.min(rect.left + rect.width / 2, window.innerWidth - tooltipWidth / 2 - margin),
+            ),
             transform: 'translateX(-50%)',
           }
           break
         case 'top':
           style = {
             bottom: window.innerHeight - rect.top + tooltipPadding,
-            left: Math.max(margin, Math.min(
-              rect.left + rect.width / 2,
-              window.innerWidth - tooltipWidth / 2 - margin
-            )),
+            left: Math.max(
+              margin,
+              Math.min(rect.left + rect.width / 2, window.innerWidth - tooltipWidth / 2 - margin),
+            ),
             transform: 'translateX(-50%)',
           }
           break
         case 'right':
           style = {
-            top: Math.max(margin, Math.min(
-              rect.top + rect.height / 2,
-              window.innerHeight - tooltipHeight / 2 - margin
-            )),
+            top: Math.max(
+              margin,
+              Math.min(rect.top + rect.height / 2, window.innerHeight - tooltipHeight / 2 - margin),
+            ),
             left: rect.right + tooltipPadding,
             transform: 'translateY(-50%)',
           }
           break
         case 'left':
           style = {
-            top: Math.max(margin, Math.min(
-              rect.top + rect.height / 2,
-              window.innerHeight - tooltipHeight / 2 - margin
-            )),
+            top: Math.max(
+              margin,
+              Math.min(rect.top + rect.height / 2, window.innerHeight - tooltipHeight / 2 - margin),
+            ),
             right: window.innerWidth - rect.left + tooltipPadding,
             transform: 'translateY(-50%)',
           }
@@ -363,7 +367,7 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
     // Actualizar en resize
     const handleResize = () => updateSpotlight()
     window.addEventListener('resize', handleResize)
-    
+
     // Cleanup: remover clases al desmontar
     return () => {
       window.removeEventListener('resize', handleResize)
@@ -413,23 +417,14 @@ export function TourOverlay({ steps, onComplete, onSkip }: Props) {
         <TooltipText>{step.text}</TooltipText>
         <ButtonGroup>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <Button
-              variant="secondary"
-              onClick={handlePrev}
-              disabled={currentStep === 0}
-            >
+            <Button variant="secondary" onClick={handlePrev} disabled={currentStep === 0}>
               {t('tour.prev')}
             </Button>
-            <Button
-              variant="primary"
-              onClick={handleNext}
-            >
+            <Button variant="primary" onClick={handleNext}>
               {currentStep === steps.length - 1 ? t('tour.finish') : t('tour.next')}
             </Button>
           </div>
-          <SkipButton onClick={onSkip}>
-            {t('tour.skip')}
-          </SkipButton>
+          <SkipButton onClick={onSkip}>{t('tour.skip')}</SkipButton>
         </ButtonGroup>
       </Tooltip>
     </>

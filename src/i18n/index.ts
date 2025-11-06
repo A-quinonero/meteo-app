@@ -8,20 +8,18 @@ const STORAGE_KEY = 'lang'
 const saved = typeof window !== 'undefined' ? window.localStorage.getItem(STORAGE_KEY) : null
 const initialLng = saved === 'es' || saved === 'en' ? saved : 'en'
 
-i18n
-  .use(initReactI18next)
-  .init({
-    resources: {
-      en: { common: enCommon },
-      es: { common: esCommon },
-    },
-    lng: initialLng,
-    fallbackLng: 'en',
-    supportedLngs: ['en', 'es'],
-    ns: ['common'],
-    defaultNS: 'common',
-    interpolation: { escapeValue: false },
-  })
+i18n.use(initReactI18next).init({
+  resources: {
+    en: { common: enCommon },
+    es: { common: esCommon },
+  },
+  lng: initialLng,
+  fallbackLng: 'en',
+  supportedLngs: ['en', 'es'],
+  ns: ['common'],
+  defaultNS: 'common',
+  interpolation: { escapeValue: false },
+})
 
 export const changeLanguage = (lng: 'en' | 'es') => {
   i18n.changeLanguage(lng)

@@ -17,29 +17,29 @@ export async function getHourlyForecastByCoords(
   lat: number,
   lon: number,
   lang: Language,
-  units: Units
+  units: Units,
 ): Promise<WeatherForecast> {
   const url = 'https://api.openweathermap.org/data/3.0/onecall'
-  const resp = await http.get(url, { 
-    params: { 
-      lat, 
-      lon, 
-      lang, 
-      units, 
-      exclude: 'minutely,daily,alerts' 
-    } 
+  const resp = await http.get(url, {
+    params: {
+      lat,
+      lon,
+      lang,
+      units,
+      exclude: 'minutely,daily,alerts',
+    },
   })
-  
+
   const parsed = parseOneCallApi(resp.data)
   const tz = parsed.timezone_offset // seconds
 
   // Agrupar por día para calcular min/max de cada día
   const entriesByDay = new Map<string, number[]>()
-  
-  parsed.hourly.forEach((item) => {
+
+  parsed.hourly.forEach(item => {
     const localDate = new Date((item.dt + tz) * 1000)
     const dayKey = `${localDate.getUTCFullYear()}-${localDate.getUTCMonth()}-${localDate.getUTCDate()}`
-    
+
     if (!entriesByDay.has(dayKey)) {
       entriesByDay.set(dayKey, [])
     }
@@ -56,7 +56,7 @@ export async function getHourlyForecastByCoords(
   })
 
   // Mapear entradas con min/max del día correspondiente
-  const entries: WeatherEntry[] = parsed.hourly.map((item) => {
+  const entries: WeatherEntry[] = parsed.hourly.map(item => {
     const localDate = new Date((item.dt + tz) * 1000)
     const dayKey = `${localDate.getUTCFullYear()}-${localDate.getUTCMonth()}-${localDate.getUTCDate()}`
     const minMax = dayMinMax.get(dayKey) || { min: item.temp, max: item.temp }
