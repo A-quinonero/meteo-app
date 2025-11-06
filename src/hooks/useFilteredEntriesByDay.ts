@@ -62,10 +62,6 @@ export function useFilteredEntriesByDay(
       return isSameTargetDay
     })
 
-    console.log(
-      `[useFilteredEntriesByDay] Day ${selectedDay}, filtered ${filtered.length} entries from ${entries.length}`,
-    )
-
     return filtered
   }, [entries, selectedDay, timezoneOffsetSeconds])
 }
